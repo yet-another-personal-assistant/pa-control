@@ -1,0 +1,6 @@
+all:
+  hosts:
+    tg:
+      ansible_user: user
+      ansible_port: port
+      ansible_host: host

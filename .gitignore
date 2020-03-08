@@ -1,0 +1,4 @@
+.venv/
+Pipfile
+inventory/*.yml
+
