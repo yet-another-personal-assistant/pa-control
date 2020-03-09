@@ -1,0 +1,65 @@
+---
+- name: install dependencies
+  apt:
+    name: ['libaio1', 'socat']
+    state: present
+
+- name: Check if xtomp is installed
+  command: dpkg-query -W xtomp
+  register: xtomp_check_deb
+  failed_when: xtomp_check_deb.rc > 1
+  changed_when: xtomp_check_deb.rc == 1
+
+- name: install xtomp
+  apt:
+    deb: http://download.tp23.org/download/deb/xtomp-0.3-1.x86_64.deb
+  when: xtomp_check_deb.rc == 1
+
+- name: upload xtomp configuration
+  copy:
+    src: files/xtomp.conf
+    dest: /etc/
+
+- name: start xtomp service
+  service:
+    name: xtomp
+    state: started
+    enabled: yes
+
+- name: create xtomp-user user
+  user:
+    name: xtomp-user
+    state: present
+    shell: /opt/xtomp-user/shell
+    home: /opt/xtomp-user
+
+- name: upload shell entrypoint
+  copy:
+    src: files/shell
+    dest: /opt/xtomp-user/
+    mode: '500'
+    owner: xtomp-user
+
+- name: create .ssh directory for xtomp-user
+  file:
+    path: /opt/xtomp-user/.ssh
+    state: directory
+    owner: xtomp-user
+    group: xtomp-user
+
+- name: disable ssh banner for xtomp-user
+  file:
+    path: /opt/xtomp-user/.hushlogin
+    state: touch
+    owner: xtomp-user
+    group: xtomp-user
+    modification_time: preserve
+    access_time: preserve
+
+- name: copy ssh authorized_keys from root to xtomp-user
+  copy:
+    remote_src: yes
+    src: /root/.ssh/authorized_keys
+    dest: /opt/xtomp-user/.ssh/
+    owner: xtomp-user
+    group: xtomp-user

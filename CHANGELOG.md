@@ -10,3 +10,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Setup playbook for TG relay server
 - Deploy playbook for TG relay server
 - Role for TG relay server
+- Role for xtomp server
