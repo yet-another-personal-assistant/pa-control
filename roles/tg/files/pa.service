@@ -1,0 +1,9 @@
+[Unit]
+Description=PA service
+
+[Service]
+WorkingDirectory=/var/pa
+ExecStart=/usr/bin/python3 /var/pa/app.py
+
+[Install]
+WantedBy=default.target

@@ -1,4 +1,5 @@
 .venv/
 Pipfile
-inventory/*.yml
 
+.#*
+playbooks/tmp/

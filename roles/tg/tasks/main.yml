@@ -1,0 +1,29 @@
+---
+- name: Get pa-tg source (local checkout)
+  local_action:
+    module: git
+    repo: https://gitlab.com/personal-assistant-bot/infrastructure/pa-tg.git
+    version: v0.2.0
+    dest: tmp/pa-tg
+
+- name: Upload pa-tg source
+  synchronize:
+    src: tmp/pa-tg/
+    dest: /var/pa
+    delete: yes
+
+- name: Install dependencies
+  pip: requirements=/var/pa/requirements.txt
+
+- name: Upload service file
+  copy:
+    src: files/pa.service
+    dest: /etc/systemd/system/
+
+- name: Upload token file
+  copy:
+    src: files/token.txt
+    dest: /var/pa
+
+- name: Start the service
+  service: name=pa state=started enabled=yes

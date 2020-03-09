@@ -1,0 +1,16 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+  - name: update apt
+    raw: apt-get update
+  - name: install python3
+    raw: apt-get -y install python3
+
+- hosts: tg
+  tasks:
+  - name: install pip
+    apt: name=python3-pip
+  - name: install rsync
+    apt: name=rsync
+
