@@ -2,7 +2,7 @@
 Description=PA service
 
 [Service]
-WorkingDirectory=/var/pa
+Environment=TOKEN_FILE=/var/pa-token.txt
 ExecStart=/usr/bin/python3 /var/pa/app.py
 
 [Install]
