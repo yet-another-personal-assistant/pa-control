@@ -1,17 +1,4 @@
 ---
-- name: check installed pa-tg
-  block:
-  - name: check the hash file exists
-    stat:
-      path: /var/pa/hash
-    register: hash
-
-  - name: get hash of installed pa-tg
-    slurp:
-      src: /var/pa-hash
-    register: tg_hash
-    when: hash.stat.exists
-
 - name: get pa-tg source (local checkout)
   local_action:
     module: git
@@ -28,16 +15,12 @@
       dest: /var/pa
       delete: yes
     notify: restart server
-
-  - name: write hash of installed pa-tg
-    copy:
-      content: "{{ tg.after }}"
-      dest: /var/pa/hash
+    notify: update installed tg hash
 
   - name: install dependencies
     pip:
       requirements: /var/pa/requirements.txt
-  when: tg_hash is skipped or tg_hash.content|b64decode != tg.after
+  when: ansible_local.tg.tg_hash != tg.after
 
 - name: upload service file
   copy:
