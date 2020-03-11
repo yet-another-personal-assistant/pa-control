@@ -1,0 +1,10 @@
+---
+- name: make facts directory
+  file:
+    state: directory
+    dest: /etc/ansible/facts.d
+
+- name: write hash of installed pa-tg
+  copy:
+    content: "{\"tg_hash\": \"{{ tg.after }}\"}"
+    dest: /etc/ansible/facts.d/tg.fact

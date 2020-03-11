@@ -7,20 +7,16 @@
     dest: tmp/pa-tg
   register: tg
 
-- name: upload new source
-  block:
-  - name: upload pa-tg source
-    synchronize:
-      src: tmp/pa-tg/
-      dest: /var/pa
-      delete: yes
-    notify: restart server
-    notify: update installed tg hash
-
-  - name: install dependencies
-    pip:
-      requirements: /var/pa/requirements.txt
-  when: ansible_local.tg.tg_hash != tg.after
+- name: upload pa-tg source
+  synchronize:
+    src: tmp/pa-tg/
+    dest: /var/pa
+    delete: yes
+  notify:
+  - install dependencies
+  - update tg hash
+  - restart server
+  when: ansible_local.tg.tg_hash|default('') != tg.after
 
 - name: upload service file
   copy:

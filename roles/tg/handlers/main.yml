@@ -1,8 +1,15 @@
 ---
+- name: install dependencies
+  pip:
+    requirements: /var/pa/requirements.txt
+
+# include_tasks is a workaround -- can't use block in handlers
+- name: update tg hash
+  include_tasks: tasks/write_hash.yml
+
 - name: reload systemd unit
   systemd:
     daemon_reload: yes
-  when: unit.changed
   notify: restart server
 
 - name: restart server
@@ -10,15 +17,3 @@
     name: pa
     state: restarted
     enabled: yes
-
-- name: update installed tg hash
-  block:
-  - name: make facts directory
-    file:
-      state: directory
-      dest: /etc/ansible/facts.d
-
-  - name: write hash of installed pa-tg
-    copy:
-      content: "{\"tg_hash\": \"{{ tg.after }}\"}"
-      dest: /etc/ansible/facts.d/tg.fact
