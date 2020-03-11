@@ -1,48 +1,58 @@
 ---
+- name: check installed pa-tg
+  block:
+  - name: check the hash file exists
+    stat:
+      path: /var/pa/hash
+    register: hash
+
+  - name: get hash of installed pa-tg
+    slurp:
+      src: /var/pa-hash
+    register: tg_hash
+    when: hash.stat.exists
+
 - name: get pa-tg source (local checkout)
   local_action:
     module: git
     repo: https://gitlab.com/personal-assistant-bot/infrastructure/pa-tg.git
     version: "{{ tg_version }}"
     dest: tmp/pa-tg
-
-- name: upload pa-tg source
-  synchronize:
-    src: tmp/pa-tg/
-    dest: /var/pa
-    delete: yes
   register: tg
 
-- name: install dependencies
-  pip:
-    requirements: /var/pa/requirements.txt
+- name: upload new source
+  block:
+  - name: upload pa-tg source
+    synchronize:
+      src: tmp/pa-tg/
+      dest: /var/pa
+      delete: yes
+    notify: restart server
+
+  - name: write hash of installed pa-tg
+    copy:
+      content: "{{ tg.after }}"
+      dest: /var/pa/hash
+
+  - name: install dependencies
+    pip:
+      requirements: /var/pa/requirements.txt
+  when: tg_hash is skipped or tg_hash.content|b64decode != tg.after
 
 - name: upload service file
   copy:
     src: files/pa.service
     dest: /etc/systemd/system/
-  register: unit
+  notify: reload systemd unit
 
 - name: upload token file
   copy:
     src: files/token.txt
     dest: /var/pa-token.txt
-  register: token
+  notify: restart server
 
-- name: reload systemd unit
-  systemd:
-    daemon_reload: yes
-  when: unit.changed
-
-- name: start the service
+- name: ensure service is started
   service:
     name: pa
     state: started
     enabled: yes
-
-- name: restart service if new version is deployed
-  service:
-    name: pa
-    state: restarted
-    enabled: yes
-  when: tg.changed or unit.changed or token.changed

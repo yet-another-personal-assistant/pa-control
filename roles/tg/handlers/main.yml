@@ -1,0 +1,12 @@
+---
+- name: reload systemd unit
+  systemd:
+    daemon_reload: yes
+  when: unit.changed
+  notify: restart server
+
+- name: restart server
+  service:
+    name: pa
+    state: restarted
+    enabled: yes
