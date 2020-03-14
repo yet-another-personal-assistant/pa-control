@@ -1,0 +1,38 @@
+---
+- name: create xtomp-user user
+  user:
+    name: xtomp-user
+    state: present
+    shell: /opt/xtomp-user/shell
+    home: /opt/xtomp-user
+
+- name: upload shell entrypoint
+  copy:
+    src: files/shell
+    dest: /opt/xtomp-user/
+    mode: '500'
+    owner: xtomp-user
+
+- name: create .ssh directory for xtomp-user
+  file:
+    path: /opt/xtomp-user/.ssh
+    state: directory
+    owner: xtomp-user
+    group: xtomp-user
+
+- name: disable ssh banner for xtomp-user
+  file:
+    path: /opt/xtomp-user/.hushlogin
+    state: touch
+    owner: xtomp-user
+    group: xtomp-user
+    modification_time: preserve
+    access_time: preserve
+
+- name: copy ssh authorized_keys from root to xtomp-user
+  copy:
+    remote_src: yes
+    src: /root/.ssh/authorized_keys
+    dest: /opt/xtomp-user/.ssh/
+    owner: xtomp-user
+    group: xtomp-user
