@@ -16,8 +16,7 @@
   - name: install setuptools
     pip:
       name: setuptools
-  - name: install rsync
+  - name: install utils
     apt:
-      name: rsync
-      install-recommends: no
+      name: ['rsync', 'patch']
 

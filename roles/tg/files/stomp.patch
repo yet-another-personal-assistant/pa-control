@@ -1,0 +1,10 @@
+--- transport_orig.py	2020-03-14 23:03:15.314468411 +0300
++++ transport.py	2020-03-14 23:03:32.818466891 +0300
+@@ -101,6 +101,7 @@
+         handshake will occur.
+         """
+         self.running = True
++        self.__notified_on_disconnect = False
+         self.attempt_connection()
+         receiver_thread = self.create_thread_fc(self.__receiver_loop)
+         logging.info("Created thread %s using func %s", receiver_thread, self.create_thread_fc)
