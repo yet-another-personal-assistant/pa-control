@@ -8,8 +8,8 @@
 
 - name: upload shell entrypoint
   copy:
-    src: files/shell
-    dest: /opt/xtomp-user/
+    src: files/shell.sh
+    dest: /opt/xtomp-user/shell
     mode: '500'
     owner: xtomp-user
 
