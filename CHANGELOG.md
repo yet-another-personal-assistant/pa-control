@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Do not install recommended packages for pip -- setuptools is enough
+- Disable echo for xtomp-user "shell"
 
 ## 0.1.0 - 2020-03-13
 ### Added
