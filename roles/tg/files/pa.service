@@ -1,5 +1,6 @@
 [Unit]
 Description=PA service
+Requires=xtomp.service
 
 [Service]
 Environment=TOKEN_FILE=/var/pa-token.txt
