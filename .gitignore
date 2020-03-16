@@ -3,3 +3,4 @@ Pipfile
 
 .#*
 playbooks/tmp/
+roles/*/molecule/*/tmp/

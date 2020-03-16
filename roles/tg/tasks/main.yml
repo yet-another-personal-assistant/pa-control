@@ -30,6 +30,12 @@
     dest: /var/pa-token.txt
   notify: restart server
 
+- name: install xtomp server
+  import_tasks: xtomp.yml
+
+- name: set up xtomp-user account
+  import_tasks: user.yml
+
 - name: ensure service is started
   service:
     name: pa

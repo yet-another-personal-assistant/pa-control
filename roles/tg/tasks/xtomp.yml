@@ -21,12 +21,10 @@
   copy:
     src: files/xtomp.conf
     dest: /etc/
+  notify: restart xtomp
 
 - name: ensure xtomp service is started
   service:
     name: xtomp
     state: started
     enabled: yes
-
-- name: set up xtomp-user account
-  import_tasks: user.yml

@@ -1,0 +1,19 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: debian10
+    image: jrei/systemd-debian:10
+    command: "/lib/systemd/systemd"
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+provisioner:
+  name: ansible
+  options:
+    'vault-password-file': '../../../../scripts/pass.sh'
+    'extra-vars': "ansible_python_interpreter=/usr/bin/python3"
+verifier:
+  name: ansible

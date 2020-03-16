@@ -2,4 +2,3 @@
 - hosts: tg
   roles:
   - tg
-  - xtomp

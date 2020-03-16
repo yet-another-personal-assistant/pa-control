@@ -13,13 +13,6 @@
     mode: '500'
     owner: xtomp-user
 
-- name: create .ssh directory for xtomp-user
-  file:
-    path: /opt/xtomp-user/.ssh
-    state: directory
-    owner: xtomp-user
-    group: xtomp-user
-
 - name: disable ssh banner for xtomp-user
   file:
     path: /opt/xtomp-user/.hushlogin
@@ -29,10 +22,7 @@
     modification_time: preserve
     access_time: preserve
 
-- name: copy ssh authorized_keys from root to xtomp-user
-  copy:
-    remote_src: yes
-    src: /root/.ssh/authorized_keys
-    dest: /opt/xtomp-user/.ssh/
-    owner: xtomp-user
-    group: xtomp-user
+- name: set ssh key to xtomp-user
+  authorized_key:
+    user: xtomp-user
+    key: "{{ lookup('file', 'xtomp-user.key.pub') }}"
