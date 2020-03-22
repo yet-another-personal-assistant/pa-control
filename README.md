@@ -16,3 +16,20 @@ Replace existing encrypted files with your data:
 
 Instead of directly running the ansible, `make deploy-tg` can be used
 to deploy the TG relay server.
+
+## Testing
+
+Playbooks can be tested using [molecule]:
+
+    cd roles/tg
+    molecule test
+
+### Systemd cgroup creation
+
+On systems without systemd run the following commands so that
+systemd-enabled containers could be started:
+
+    # mkdir /sys/fs/cgroup/systemd
+    # mount -t cgroup -o none,name=systemd none /sys/fs/cgroup/systemd
+
+[molecule]: https://molecule.readthedocs.io/en/latest/

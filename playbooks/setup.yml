@@ -16,6 +16,10 @@
   - name: install setuptools
     pip:
       name: setuptools
+  - name: update pip
+    pip:
+      name: setuptools
+      state: latest
   - name: install utils
     apt:
       name: ['rsync', 'patch']

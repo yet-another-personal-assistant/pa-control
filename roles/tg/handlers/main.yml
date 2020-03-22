@@ -9,7 +9,7 @@
   include_tasks: tasks/write_hash.yml
 
 - name: patch stomp
-  include_tasks: tasks/patch_stomp.yml
+  include_tasks: tasks/stomp.yml
 
 - name: reload systemd unit
   systemd:

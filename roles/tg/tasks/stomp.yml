@@ -1,0 +1,26 @@
+---
+- name: check requirements
+  shell: grep stomp.py /var/pa/requirements.txt
+  register: got_stomp
+  ignore_errors: true
+  args:
+    warn: no
+
+- name: get patched source (local checkout)
+  local_action:
+    module: git
+    repo: https://github.com/aragaer/stomp.py.git
+    version: "heartbeat"
+    dest: tmp/stomp.py
+  register: stomp
+
+- name: upload patched stomp source
+  synchronize:
+    src: tmp/stomp.py/
+    dest: /opt/stomp.py
+    delete: yes
+  register: updated_stomp
+
+- name: install patched stomp
+  shell: python3 -mpip install --use-pep517 /opt/stomp.py
+  when: updated_stomp|bool
