@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: setup python
+  hosts: all
   gather_facts: no
   tasks:
   - name: update apt
@@ -7,20 +8,29 @@
   - name: install python3
     raw: apt-get -y install --no-install-recommends python3
 
-- hosts: tg
+- name: setup requirements
+  hosts: tg
   tasks:
-  - name: install pip
-    apt:
-      name: python3-pip
-      install-recommends: no
-  - name: install setuptools
-    pip:
-      name: setuptools
-  - name: update pip
-    pip:
-      name: setuptools
-      state: latest
+  - name: install python pip
+    block:
+    - name: install pip
+      apt:
+        name: python3-pip
+        install-recommends: no
+        state: present
+    - name: install pkg-resources
+      apt:
+        name: python3-pkg-resources
+        state: present
+    - name: install setuptools
+      pip:
+        name: setuptools
+        state: present
+    - name: update pip
+      pip:
+        name: pip
+        state: latest
   - name: install utils
     apt:
       name: ['rsync', 'patch']
-
+      state: present
