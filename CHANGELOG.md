@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.2.0] - 2020-03-23
 ### Added
 - xtomp-user own ssh key
 - molecule "testing"
@@ -21,4 +23,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Role for TG relay server
 - Role for xtomp server
 
-[Unreleased]: https://gitlab.com/personal-assistant-bot/pa-control/compare/v0.1.0...master
+[Unreleased]: https://gitlab.com/personal-assistant-bot/pa-control/compare/v0.2.0...master
+[0.2.0]: https://gitlab.com/personal-assistant-bot/pa-control/compare/v0.1.0...v0.2.0
