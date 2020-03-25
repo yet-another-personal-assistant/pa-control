@@ -3,24 +3,69 @@
   shell: grep stomp.py /var/pa/requirements.txt
   register: got_stomp
   ignore_errors: true
+  changed_when: false
   args:
     warn: no
 
 - name: get patched source (local checkout)
+  block:
+  - name: stomp directory
+    local_action:
+      module: tempfile
+      state: directory
+    register: stomp_src
+    changed_when: false
+
+  - name: checkout
+    local_action:
+      module: git
+      repo: https://github.com/aragaer/stomp.py.git
+      version: "{{ stomp_version }}"
+      dest: "{{ stomp_src.path }}"
+      depth: 1
+    register: stomp
+    changed_when: ansible_local.stomp.hash|default('') != stomp.after
+  when: got_stomp.rc == 0
+
+- name: build stomp
+  block:
+  - name: install dependencies
+    local_action:
+      module: pip
+      requirements: "{{ stomp_src.path }}/requirements.txt"
+      virtualenv: "{{ stomp_src.path }}/.venv"
+
+  - name: install poetry
+    local_action:
+      module: pip
+      name: poetry
+      virtualenv: "{{ stomp_src.path }}/.venv"
+
+  - name: build stomp wheel
+    local_action: command .venv/bin/poetry build -f wheel --no-ansi
+    args:
+      chdir:  "{{ stomp_src.path }}"
+  when: stomp.changed
+
+- name: install stomp
+  block:
+  - name: upload stomp
+    copy:
+      src: "{{ stomp_src.path }}/dist/stomp.py-6.0.0-py3-none-any.whl"
+      dest: /tmp
+
+  - name: install stomp
+    pip:
+      name: /tmp/stomp.py-6.0.0-py3-none-any.whl
+    notify:
+    - update hash
+    - restart server
+  when: stomp.changed
+
+- name: cleanup local stomp
   local_action:
-    module: git
-    repo: https://github.com/aragaer/stomp.py.git
-    version: "heartbeat"
-    dest: tmp/stomp.py
-  register: stomp
-
-- name: upload patched stomp source
-  synchronize:
-    src: tmp/stomp.py/
-    dest: /opt/stomp.py
-    delete: yes
-  register: updated_stomp
-
-- name: install patched stomp
-  shell: python3 -mpip install --use-pep517 /opt/stomp.py
-  when: updated_stomp|bool
+    module: file
+    path: "{{ stomp_src.path }}"
+    state: absent
+  when: got_stomp.rc == 0
+  changed_when: false

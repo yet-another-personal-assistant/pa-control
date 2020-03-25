@@ -6,5 +6,10 @@
 
 - name: write hash of installed pa-tg
   copy:
-    content: "{\"tg_hash\": \"{{ tg.after }}\"}"
+    content: "{\"hash\": \"{{ tg.after }}\"}"
     dest: /etc/ansible/facts.d/tg.fact
+
+- name: write hash of installed stomp
+  copy:
+    content: "{\"hash\": \"{{ stomp.after }}\"}"
+    dest: /etc/ansible/facts.d/stomp.fact

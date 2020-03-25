@@ -2,14 +2,10 @@
 - name: install dependencies
   pip:
     requirements: /var/pa/requirements.txt
-  notify: patch stomp
 
 # include_tasks is a workaround -- can't use block in handlers
-- name: update tg hash
+- name: update hash
   include_tasks: tasks/write_hash.yml
-
-- name: patch stomp
-  include_tasks: tasks/stomp.yml
 
 - name: reload systemd unit
   systemd:

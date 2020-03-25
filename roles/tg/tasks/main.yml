@@ -14,9 +14,12 @@
     delete: yes
   notify:
   - install dependencies
-  - update tg hash
+  - update hash
   - restart server
-  when: ansible_local.tg.tg_hash|default('') != tg.after
+  when: ansible_local.tg.hash|default('') != tg.after
+
+- name: patch stomp
+  include_tasks: tasks/stomp.yml
 
 - name: upload service file
   copy:
