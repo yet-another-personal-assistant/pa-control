@@ -21,6 +21,12 @@
 - name: patch stomp
   include_tasks: tasks/stomp.yml
 
+- name: upload config file
+  copy:
+    src: files/pa.conf
+    dest: /etc/
+  notify: restart server
+
 - name: upload service file
   copy:
     src: files/pa.service

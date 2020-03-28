@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Changed
-- switch to pa-tg v0.4.0
+- switch to pa-tg v0.5.0
 - use custom patched stomp.py
 ### Fixed
 - xtomp-user shell is now in raw mode

@@ -3,8 +3,7 @@ Description=PA service
 Requires=xtomp.service
 
 [Service]
-Environment=TOKEN_FILE=/var/pa-token.txt
-ExecStart=/usr/bin/python3 /var/pa/app.py
+ExecStart=/usr/bin/python3 /var/pa/app.py -c /etc/pa.conf
 
 [Install]
 WantedBy=default.target
