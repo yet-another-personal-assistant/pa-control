@@ -2,27 +2,40 @@
 
 Stuff that allows deployment/management of PA instance.
 
-## Usage
+## Components
 
-Replace existing encrypted files with your data:
+Currently two roles are defined:
 
-- roles/tg/files/token.txt - text file with telegram token for TG relay
-- inventory/host_vars/tg - parameters for accessing TG relay server:
-  - ansible_user
-  - ansible_port
-  - ansible_host
+- tg -- Telegram relay server
+- brain -- "backend" for the bot
+
+### TG
+
+TG role is currently deployed on a vps and consists of the following
+components:
+
+- [xtomp] -- [STOMP] message broker
+- [pa-tg] -- telegram-to-stomp relay implemeted in Python
+- xtomp-user account that connects directly to xtomp socket using [socat]
+
+In order to avoid installing `git` and full `pip` on the vps most
+steps are performed locally.
+
+### Brain
+
+Brain role is currently deployed on a localhost. It consists of a
+single Docker container.
 
 ## Makefile
 
-Instead of directly running the ansible, `make deploy-tg` can be used
-to deploy the TG relay server.
+Instead of directly running the ansible, `make deploy` can be used
+to deploy all the components
 
 ## Testing
 
 Playbooks can be tested using [molecule]:
 
-    cd roles/tg
-    molecule test
+make test-tg
 
 ### Systemd cgroup creation
 
@@ -32,4 +45,8 @@ systemd-enabled containers could be started:
     # mkdir /sys/fs/cgroup/systemd
     # mount -t cgroup -o none,name=systemd none /sys/fs/cgroup/systemd
 
+[xtomp]: http://xtomp.tp23.org/
+[STOMP]: https://stomp.github.io/
+[pa-tg]: https://gitlab.com/personal-assistant-bot/infrastructure/pa-tg
+[socat]: https://linux.die.net/man/1/socat
 [molecule]: https://molecule.readthedocs.io/en/latest/

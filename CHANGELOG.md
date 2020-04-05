@@ -5,8 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- deploy brain
 ### Changed
-- switch to pa-tg v0.5.0
+- switch to pa-tg v0.5.1
 - use custom patched stomp.py
 ### Fixed
 - xtomp-user shell is now in raw mode

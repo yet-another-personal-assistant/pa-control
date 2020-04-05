@@ -2,3 +2,7 @@
 - hosts: tg
   roles:
   - tg
+
+- hosts: localhost
+  roles:
+  - brain

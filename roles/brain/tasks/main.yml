@@ -1,0 +1,70 @@
+---
+- name: prepare secrets vaule
+  block:
+  - name: ensure volume exists
+    docker_volume:
+      state: present
+      volume_name: sshstomp-secrets
+    register: sshstomp_secrets_volume
+
+  - name: prepare files
+    tempfile:
+      state: directory
+    register: sshstomp_secrets_dir
+    changed_when: false
+
+  - name: get files from volume
+    docker_container:
+      name: busybox-copy
+      image: busybox
+      auto_remove: true
+      mounts:
+      - source: sshstomp-secrets
+        target: /hidden
+      - source: "{{ sshstomp_secrets_dir.path }}"
+        target: /visible
+        type: bind
+      command: cp /hidden/sshstomp.conf /hidden/xtomp-user.key /visible
+    changed_when: false
+    when: not sshstomp_secrets_volume.changed
+
+  - name: copy config
+    template:
+      src: templates/sshstomp.conf
+      dest: "{{ sshstomp_secrets_dir.path }}"
+
+  - name: copy key
+    copy:
+      src: xtomp-user.key
+      dest: "{{ sshstomp_secrets_dir.path }}"
+
+  - name: move files to volume
+    docker_container:
+      name: busybox-copy
+      image: busybox
+      auto_remove: true
+      mounts:
+      - source: sshstomp-secrets
+        target: /hidden
+      - source: "{{ sshstomp_secrets_dir.path }}"
+        target: /visible
+        type: bind
+      command: cp /visible/sshstomp.conf /visible/xtomp-user.key /hidden
+    changed_when: false
+
+  - name: cleanup secrets dir
+    local_action:
+      module: file
+      path: "{{ sshstomp_secrets_dir.path }}"
+      state: absent
+    changed_when: false
+
+- name: start the container
+  docker_container:
+    name: pa-sshstomp
+    image: stomp-over-ssh
+    auto_remove: true
+    mounts:
+    - source: sshstomp-secrets
+      target: /etc/sshstomp
+      read_only: yes

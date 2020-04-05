@@ -1,0 +1,5 @@
+---
+tg_host: "{{ vault_tg_host }}"
+tg_port: "{{ vault_tg_port }}"
+tg_owner_id: "{{ vault_tg_owner_id }}"
+
