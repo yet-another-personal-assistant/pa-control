@@ -35,7 +35,7 @@ to deploy all the components
 
 Playbooks can be tested using [molecule]:
 
-make test-tg
+    $ make test-tg
 
 ### Systemd cgroup creation
 
